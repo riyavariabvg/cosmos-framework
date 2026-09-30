@@ -278,7 +278,9 @@ def run_hta(trace_dir: Path, out: Path, lines):
         return
     lines.append("\n## HTA\n")
     try:
-        ta = TraceAnalysis(trace_dir=str(trace_dir))
+        # HTA drops kernels from the last ProfilerStep by default; keep them so HTA
+        # covers the same steps as the manual analysis below.
+        ta = TraceAnalysis(trace_dir=str(trace_dir), include_last_profiler_step=True)
         ov = ta.get_comm_comp_overlap(visualize=False)
         ov.to_csv(out / "hta_comm_comp_overlap.csv", index=False)
         lines.append("get_comm_comp_overlap() (% of comm time overlapped with compute):\n\n```\n" + ov.to_string(index=False) + "\n```\n")
