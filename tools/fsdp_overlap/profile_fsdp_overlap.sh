@@ -95,6 +95,7 @@ MARKER="$RUN_DIR/.start_marker"; touch "$MARKER"
   echo "recipe: $RECIPE  toml: $TOML_FILE  nproc: $NPROC_PER_NODE"
   echo "schedule: wait=$PROFILE_WAIT warmup=$PROFILE_WARMUP active=$PROFILE_ACTIVE max_iter=$MAX_ITER"
   echo "overrides: ${OVERRIDES[*]}"
+  echo "env: PYTORCH_ALLOC_CONF=${PYTORCH_ALLOC_CONF:-} LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-} $(env | grep -E '^NCCL_' | grep -vE '^NCCL_DEBUG(_SUBSYS)?=' | tr '\n' ' ')"
   echo "--- nvidia-smi ---"; nvidia-smi --query-gpu=index,name,memory.total,driver_version --format=csv
   echo "--- topology ---"; nvidia-smi topo -m || true
   echo "--- torch ---"; python -c "import torch;print('torch',torch.__version__,'cuda',torch.version.cuda,'nccl',torch.cuda.nccl.version())" || true
